@@ -9,10 +9,7 @@ port = int(os.environ.get("PORT", 10000))
 
 @app.route("/")
 def home():
-    print("Current working directory:", os.getcwd())
-    print("Templates folder contents:", os.listdir("templates"))
     return render_template("index.html")
-
 
 
 @app.route("/search", methods=["POST"])
