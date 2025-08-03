@@ -3,6 +3,11 @@ from pokedex import analyse_pokemon  # Your Python logic
 
 app = Flask(__name__)
 
+import os
+port = int(os.environ.get("PORT", 10000))
+app.run(host="0.0.0.0", port=port)
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
