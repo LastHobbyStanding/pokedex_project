@@ -9,8 +9,9 @@ app.run(host="0.0.0.0", port=port)
 
 
 @app.route("/")
-def index():
+def home():
     return render_template("index.html")
+
 
 @app.route("/search", methods=["POST"])
 def search():
