@@ -1,6 +1,6 @@
 # Pokédex Project
 A fun Python-based Pokédex tool that calculates type effectiveness and displays results in a styled layout.
-## Planned Feature
+## Planned Features
 - Pokédex-style visual output
 - Stats chart showing Pokémon's stats vs max and average
 - Add Sp. Defence stat
