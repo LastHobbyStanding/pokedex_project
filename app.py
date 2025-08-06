@@ -9,7 +9,7 @@ port = int(os.environ.get("PORT", 10000))
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return "Gunicorn is working!"
 
 
 @app.route("/search", methods=["POST"])
@@ -28,5 +28,5 @@ def defend():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="127.0.0.1", port=8000, debug=True)
 
