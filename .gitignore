@@ -47,6 +47,7 @@ backup/
 Custom JSON settings/
 Data/
 index_old.html
+pokedex.ipynb
 
 # OS
 .DS_Store
