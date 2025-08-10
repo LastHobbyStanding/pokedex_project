@@ -60,3 +60,5 @@ Thumbs.db
 
 # Environment variables
 .env
+/CSR/monquery.csr
+/CSR/monquery.key
