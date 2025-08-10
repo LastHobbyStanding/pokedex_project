@@ -1,17 +1,9 @@
 def analyse_pokemon(query,move_type = None):
     
-    print(f"Analyzing {query} against {move_type}-type move")
-
     import requests
-
-    from termcolor import colored
-
-    import pprint
 
     from IPython.display import Image, display
 
-    pokemon_number = None
-    pokemon_name = None
 
     # Use identifier directly from Flask form
     pokemon_identifier = query
@@ -19,30 +11,18 @@ def analyse_pokemon(query,move_type = None):
     response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_identifier}")
     
     if response.status_code == 200:
-        pokemon_forms = response.json()
 
         pokemon_full_data = response.json()
 
         sprite = pokemon_full_data['sprites']['front_default']
         display(Image(url=sprite,width = 200))
 
-
+        pokemon_number = pokemon_full_data['id']
         pokemon_name = pokemon_full_data['name']
-        print(colored(pokemon_name.title(),attrs=["bold"]))
+        pokemon_title = f"{pokemon_name.title()} (#{pokemon_number:04d})"
 
         #Types
         pokemon_type_1 = pokemon_full_data['types'][0]['type']['name']
-
-        try:
-            pokemon_type_2 = pokemon_full_data['types'][1]['type']['name']
-        except IndexError: 
-            pokemon_type_2 = False
-
-        if pokemon_type_2:
-            print(pokemon_type_1.title(), " / ", pokemon_type_2.title())
-
-        else:
-            print(pokemon_type_1.title())
 
 
         # Game title
@@ -68,10 +48,6 @@ def analyse_pokemon(query,move_type = None):
         
         game_title = get_game_title(pokemon_identifier)
 
-        print()
-        print(colored("Game introduced:",attrs=["bold"]))
-        print(get_game_title(pokemon_identifier))
-
 
         # Stats
         pokemon_stats = pokemon_full_data['stats']
@@ -82,21 +58,10 @@ def analyse_pokemon(query,move_type = None):
         pokemon_sp_defence = pokemon_full_data['stats'][4]['base_stat']
         pokemon_speed = pokemon_full_data['stats'][5]['base_stat']
 
-        print()
-        print(colored("Stats: ",attrs=["bold"]))
-        print("HP:", pokemon_hp)
-        print("Attack:", pokemon_attack)
-        print("Defence:", pokemon_defence)
-        print("Special attack:", pokemon_sp_attack)
-        print("Speed:", pokemon_speed)
-        print()
-
-
         # Pulling all types from PokeAPI
         type_API = requests.get(f"https://pokeapi.co/api/v2/type/").json()
         all_types = type_API['results'] # all_types is a LIST
         type_names = [type_info['name'] for type_info in all_types]
-
 
         # Pokemon's types
         pokemon_type_1 = pokemon_full_data['types'][0]['type']['name'] if pokemon_full_data['types'] else "No types found"
@@ -123,7 +88,7 @@ def analyse_pokemon(query,move_type = None):
             "no_damage_from": [entry['name'] for entry in t1_damage_relations['no_damage_from']],
             "no_damage_to": [entry['name'] for entry in t1_damage_relations['no_damage_to']],
         }
-        print()
+
 
 
         # Pokemon's type 2 data
@@ -139,7 +104,7 @@ def analyse_pokemon(query,move_type = None):
             "no_damage_from": [entry['name'] for entry in t2_damage_relations['no_damage_from']],
             "no_damage_to": [entry['name'] for entry in t2_damage_relations['no_damage_to']],
         }
-        print()
+
 
         offensive_profiles = {}
 
@@ -166,7 +131,6 @@ def analyse_pokemon(query,move_type = None):
 
         if move_type:
 
-            print(colored("Defending against a specific type:",attrs=["bold"]))
             type_api = requests.get(f"https://pokeapi.co/api/v2/type/{(move_type)}").json()
             relations = type_api['damage_relations']
             damage_profile = {
@@ -198,9 +162,24 @@ def analyse_pokemon(query,move_type = None):
                 elif pokemon_type_2 in damage_profile['no_damage_to']:
                     multiplier *= 0
 
+        # Move type selection logic
+        if move_type:
+            selected_type = move_type.title()
+
+        else:
+            selected_type = "No move type selected"
+
+        if multiplier:
+            get_effectiveness = f"{multiplier}x damage"
+
+        else:
+            get_effectiveness = None
 
         return {
             "name": pokemon_name.title(),
+            "id": pokemon_number,
+            "title": pokemon_title,
+            "selected_type": selected_type,
             "types": [pokemon_type_1.title(), pokemon_type_2.title()] if pokemon_type_2 else [pokemon_type_1.title()],
             "game_title": game_title,
             "sprite_url": sprite,
@@ -209,15 +188,13 @@ def analyse_pokemon(query,move_type = None):
                 "Attack": pokemon_attack,
                 "Defense": pokemon_defence,
                 "Special Attack": pokemon_sp_attack,
+                "Special Defense": pokemon_sp_defence,
                 "Speed": pokemon_speed
             },
             "offensive_profiles": offensive_profiles,
-            "defensive_effectiveness": {
-                "selected_type": move_type.title() if move_type else None,
-                "move_type_effectiveness": f"{multiplier}x damage" if multiplier is not None else "N/A",
-            }
+            "get_effectiveness": get_effectiveness,
         }
-    
+
     else:
         print(f"Error fetching data: {response.status_code}")
         pokemon_forms = None

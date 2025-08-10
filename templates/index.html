@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,15 +11,17 @@
      <div class="container mt-4">
     <h1>Pokémon Analyser</h1>
     <form class="d-flex flex-column gap-2" action="/search" method="post">
-    <input class="form-control" type="text" name="query" placeholder="Enter name or number">
-    <button class="btn btn-primary" type="submit">Analyse</button>
+        <label>
+            <input class="form-control" type="text" name="query" placeholder="Enter name or number">
+        </label>
+        <button class="btn btn-primary" type="submit">Analyse</button>
     </form>
 
 
     {% if result %}
         <div class="card mt-4">
             <div class="card-body">
-                <h2 class="card-title">{{ result.name }}</h2>
+                <h2 class="card-title">{{ result.title }}</h2>
 
         <img class="img-fluid mb-3" src="{{ result.sprite_url }}" alt="Sprite of {{ result.name }}">
 
@@ -52,6 +54,7 @@
         <input type="hidden" name="query" value="{{ result.name }}">
         <label for="move_type">Select move type</label>
         <select id="move_type" class="form-select" name="move_type">
+                <option value="select_move_type">Select move type</option>
                 <option value="normal">Normal</option>
                 <option value="fire">Fire</option>
                 <option value="water">Water</option>
@@ -73,7 +76,8 @@
             </select>
             <button class="btn btn-secondary" type="submit">Check Effectiveness</button>
             </form>
-        <p class="mt-3"><strong>Effectiveness:</strong> {{ result.defensive_effectiveness.move_type_effectiveness }}</p>
+        <p class="mt-3"><strong>Selected move type:</strong> {{ result.selected_type}}</p>
+        <p class="mt-3"><strong>Effectiveness:</strong> {{ result.get_effectiveness}}</p>
     {% endif %}
     </div>
 

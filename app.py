@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from pokedex import analyse_pokemon  # Your Python logic
 
 app = Flask(__name__)
@@ -11,9 +11,11 @@ port = int(os.environ.get("PORT", 10000))
 def home():
     return render_template("index.html")
 
-
-@app.route("/search", methods=["POST"])
+@app.route("/search", methods=["GET","POST"])
 def search():
+    if request.method == "GET":
+        return redirect(url_for('index'))  # Redirect to your home page
+
     query = request.form["query"]  # Pokémon name or number
     move_type = request.form.get("move_type", None)  # default to None
     result = analyse_pokemon(query, move_type)  # Pass both to logic

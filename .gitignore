@@ -62,3 +62,4 @@ Thumbs.db
 .env
 /CSR/monquery.csr
 /CSR/monquery.key
+/templates/local_testing.py
