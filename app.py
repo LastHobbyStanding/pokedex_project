@@ -14,7 +14,7 @@ def home():
 @app.route("/search", methods=["GET","POST"])
 def search():
     if request.method == "GET":
-        return redirect(url_for('index'))  # Redirect to your home page
+        return redirect(url_for('home'))  # Redirect to your home page
 
     query = request.form["query"]  # Pokémon name or number
     move_type = request.form.get("move_type", None)  # default to None
