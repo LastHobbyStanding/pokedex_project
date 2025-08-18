@@ -14,7 +14,8 @@
         <label>
             <input class="form-control" type="text" name="query" placeholder="Enter name or number">
         </label>
-        <button class="btn btn-primary" type="submit">Analyse</button>
+        <button class="btn btn-custom" type="submit">Analyse</button>
+
     </form>
 
 
@@ -32,19 +33,24 @@
         <h3>Stats</h3>
         <ul class="list-group mb-3">
 
-        {% for stat, value in result.stats.items() %}
-            <li class="list-group-item">{{ stat }}: {{ value }}</li>
 
-        {% endfor %}
+{% for stat, value in result.stats.items() %}
+    <li class="list-group-item" style="display: flex; justify-content: space-between;">
+        <span>{{ stat }}: {{ value }}</span>
+        {% if result.stat_ranks[stat] %}
+            <span>(Rank: {{ "%.0f"|format(result.stat_ranks[stat]) }})</span>
+        {% endif %}
+    </li>
+{% endfor %}
         </ul>
 
         <h3>Offensive profiles</h3>
         {% for type, profile in result.offensive_profiles.items() %}
             <h4>{{ type }} type offensive profile:</h4>
-            <ul>
-                <li>🔥 2x damage to: {{ profile['2x'] | join(', ') }}</li>
-                <li>😩 0.5x damage to: {{ profile['0.5x'] | join(', ') }}</li>
-                <li>⛔ 0x damage to: {{ profile['0x'] | join(', ') }}</li>
+            <ul class="defensive-list">
+            <li>🔥 2x damage to: {{ profile['2x'] | join(', ') }}</li>
+            <li>😩 0.5x damage to: {{ profile['0.5x'] | join(', ') }}</li>
+            <li>⛔ 0x damage to: {{ profile['0x'] | join(', ') }}</li>
             </ul>
         {% endfor %}
 
@@ -74,7 +80,7 @@
                 <option value="steel">Steel</option>
                 <option value="fairy">Fairy</option>
             </select>
-            <button class="btn btn-secondary" type="submit">Check Effectiveness</button>
+            <button class="btn btn-custom" type="submit">Check Effectiveness</button>
             </form>
         <p class="mt-3"><strong>Selected move type:</strong> {{ result.selected_type}}</p>
         <p class="mt-3"><strong>Effectiveness:</strong> {{ result.get_effectiveness}}</p>

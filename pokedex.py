@@ -4,6 +4,7 @@ def analyse_pokemon(query,move_type = None):
 
     from IPython.display import Image, display
 
+    import Data.stats as stats
 
     # Use identifier directly from Flask form
     pokemon_identifier = query
@@ -15,7 +16,7 @@ def analyse_pokemon(query,move_type = None):
         pokemon_full_data = response.json()
 
         sprite = pokemon_full_data['sprites']['front_default']
-        display(Image(url=sprite,width = 200))
+        # display(Image(url=sprite,width = 200))
 
         pokemon_number = pokemon_full_data['id']
         pokemon_name = pokemon_full_data['name']
@@ -57,6 +58,39 @@ def analyse_pokemon(query,move_type = None):
         pokemon_sp_attack = pokemon_full_data['stats'][3]['base_stat']
         pokemon_sp_defence = pokemon_full_data['stats'][4]['base_stat']
         pokemon_speed = pokemon_full_data['stats'][5]['base_stat']
+
+        # Stats rank
+        hp_rank = None
+        attack_rank = None
+        defense_rank = None
+        sp_attack_rank = None
+        sp_defense_rank = None
+        speed_rank = None
+
+        # Query the DataFrame for this Pokemon's ranks
+        pokemon_hp_row = stats.hp_rank[stats.hp_rank['pokemon_id'] == pokemon_number]
+        if not pokemon_hp_row.empty:
+            hp_rank = pokemon_hp_row['hp_rank'].iloc[0]
+
+        pokemon_attack_row = stats.attack_rank[stats.attack_rank['pokemon_id'] == pokemon_number]
+        if not pokemon_attack_row.empty:
+            attack_rank = pokemon_attack_row['attack_rank'].iloc[0]
+
+        pokemon_defense_row = stats.defense_rank[stats.defense_rank['pokemon_id'] == pokemon_number]
+        if not pokemon_defense_row.empty:
+            defense_rank = pokemon_defense_row['defense_rank'].iloc[0]
+
+        pokemon_sp_attack_row = stats.sp_attack_rank[stats.sp_attack_rank['pokemon_id'] == pokemon_number]
+        if not pokemon_sp_attack_row.empty:
+            sp_attack_rank = pokemon_sp_attack_row['sp_attack_rank'].iloc[0]
+
+        pokemon_sp_defense_row = stats.sp_defense_rank[stats.sp_defense_rank['pokemon_id'] == pokemon_number]
+        if not pokemon_sp_defense_row.empty:
+            sp_defense_rank = pokemon_sp_defense_row['sp_defense_rank'].iloc[0]
+
+        pokemon_speed_row = stats.speed_rank[stats.speed_rank['pokemon_id'] == pokemon_number]
+        if not pokemon_speed_row.empty:
+            speed_rank = pokemon_speed_row['speed_rank'].iloc[0]
 
         # Pulling all types from PokeAPI
         type_API = requests.get(f"https://pokeapi.co/api/v2/type/").json()
@@ -190,6 +224,14 @@ def analyse_pokemon(query,move_type = None):
                 "Special Attack": pokemon_sp_attack,
                 "Special Defense": pokemon_sp_defence,
                 "Speed": pokemon_speed
+            },
+            "stat_ranks": {
+                "HP": hp_rank,
+                "Attack": attack_rank,
+                "Defense": defense_rank,
+                "Special Attack": sp_attack_rank,
+                "Special Defense": sp_defense_rank,
+                "Speed": speed_rank
             },
             "offensive_profiles": offensive_profiles,
             "get_effectiveness": get_effectiveness,

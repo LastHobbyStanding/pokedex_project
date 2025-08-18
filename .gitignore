@@ -45,7 +45,6 @@ notes.md.txt
 july.goal.txt
 backup/
 Custom JSON settings/
-Data/
 index_old.html
 pokedex.ipynb
 
@@ -63,3 +62,7 @@ Thumbs.db
 /CSR/monquery.csr
 /CSR/monquery.key
 /templates/local_testing.py
+
+# Database
+*.db
+*.sqlite3
